@@ -1,0 +1,6 @@
+First: upgrade_docker.yaml
+Second: stop_docker.yaml
+Third: update.yaml
+Fourth: upgrade.yaml
+Fifth: reboot.yaml
+Sixth: start_docker.yaml

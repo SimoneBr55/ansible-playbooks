@@ -1,0 +1,97 @@
+---
+  - name: docker upgrade
+    hosts: 192.168.2.2
+    tasks:
+      - name: upgrade password_manager packages
+        become: true
+        register: shell_output
+        shell: docker exec -it password_manager bash /root/upgrade.sh ; docker restart password_manager
+        args:
+          executable: /bin/bash  
+      - debug: var=shell_output
+
+  - name: docker stop
+    hosts: 192.168.2.2
+    tasks:
+      - name: stop docker container
+        become: true
+        shell: docker container stop password_manager
+        args:
+          executable: /bin/bash  
+      - debug: var=shell_output
+
+  - name: upgrade pihole
+    hosts: 192.168.2.2
+    tasks:
+      - name: upgrade pihole service
+        become: true
+        register: shell_output
+        shell: pihole -up
+        args:
+          executable: /bin/bash
+      - debug: var=shell_output
+
+  - name: update cache and show upgradable packages
+    hosts: linux
+    tasks:
+      - name: update cache
+        become: true
+        apt:
+          update_cache: yes
+      - name: upgradable packages
+        register: shell_output
+        shell: apt list upgradable
+        args:
+          executable: /bin/bash
+      - debug: var=shell_output
+
+  - name: upgrade
+    hosts: linux
+    vars_prompt:
+      - name: "install_upgrades"
+        prompt: "Do you want to install those upgrades? (yes/no)"
+        private: no
+
+    tasks:
+      - name: update cache and upgrade packages
+        become: true
+        apt:
+          name: "*"
+          update_cache: yes
+          state: latest
+        when: install_upgrades | bool
+
+  - name: Reboot the servers
+    hosts: linux
+    vars_prompt:
+      - name: "reboot"
+        prompt: "Do you want to reboot the systems? (yes/no)"
+        private: no
+
+    tasks:
+      - name: Issue reboot commands
+        become: true
+        reboot:
+          test_command: "whoami"
+        when: reboot | bool
+  - name: restart DNS
+    hosts: 192.168.2.2
+    tasks:
+      - name: restart DNS due to bug
+        become: true
+        register: shell_output
+        shell: pihole restartdns
+        args:
+          executable: /bin/bash
+      - debug: var=shell_output
+
+  - name: docker
+    hosts: 192.168.2.2
+    tasks:
+      - name: start docker container
+        become: true
+        register: shell_output
+        shell: docker restart password_manager;  docker exec -it password_manager noip2
+        args:
+          executable: /bin/bash  
+      - debug: var=shell_output

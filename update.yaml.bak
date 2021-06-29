@@ -1,0 +1,11 @@
+---
+  - name: update
+    hosts: linux
+    tasks:
+      - name: update cache and upgrade packages
+        become: true
+        apt:
+          name: "*"
+          update_cache: yes
+          state: latest
+

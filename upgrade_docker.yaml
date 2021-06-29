@@ -1,0 +1,11 @@
+---
+  - name: docker
+    hosts: 192.168.2.2
+    tasks:
+      - name: upgrade password_manager packages
+        become: true
+        register: shell_output
+        shell: docker exec -it password_manager bash /root/upgrade.sh ; docker restart password_manager
+        args:
+          executable: /bin/bash  
+      - debug: var=shell_output

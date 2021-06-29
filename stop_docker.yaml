@@ -1,0 +1,10 @@
+---
+  - name: docker
+    hosts: 192.168.2.2
+    tasks:
+      - name: stop docker container
+        become: true
+        shell: docker container stop password_manager
+        args:
+          executable: /bin/bash  
+      - debug: var=shell_output

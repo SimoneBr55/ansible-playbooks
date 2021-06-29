@@ -1,0 +1,8 @@
+---
+  - name: Reboot the servers
+    hosts: linux
+    tasks:
+      - name: Issue reboot commands
+        become: true
+        reboot:
+          test_command: "whoami"

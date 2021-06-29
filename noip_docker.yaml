@@ -1,0 +1,11 @@
+---
+  - name: docker
+    hosts: 192.168.2.2
+    tasks:
+      - name: start noip service in container
+        become: true
+        register: shell_output
+        shell: docker exec -it test_ansible apt update
+        args:
+          executable: /bin/bash  
+      - debug: var=shell_output

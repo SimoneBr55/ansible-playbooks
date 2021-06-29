@@ -1,0 +1,11 @@
+---
+  - name: docker
+    hosts: 192.168.2.2
+    tasks:
+      - name: start docker container
+        become: true
+        register: shell_output
+        shell: docker restart password_manager;  docker exec -it password_manager noip2
+        args:
+          executable: /bin/bash  
+      - debug: var=shell_output
