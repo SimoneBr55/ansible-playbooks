@@ -1,6 +1,6 @@
 ---
   - name: update cache and show upgradable packages
-    hosts: linux
+    hosts: linux-servers
     tasks:
       - name: update cache
         become: true

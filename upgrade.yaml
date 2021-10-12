@@ -1,6 +1,6 @@
 ---
   - name: update
-    hosts: linux
+    hosts: linux-servers
     tasks:
       - name: update cache and upgrade packages
         become: true
